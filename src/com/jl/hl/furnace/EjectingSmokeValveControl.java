@@ -301,7 +301,7 @@ public class EjectingSmokeValveControl {
 			}
 
 			int zone = vo.getZone();
-			String type = vo.getType();			
+			String type = vo.getType();
 			ArrayList<SmokeValveVO> smokeList = getSmokesByValves(nowSmokes, zone, type);
 			SmokeValveVO smokeVO1 = smokeList.get(0);
 			SmokeValveVO smokeVO2 = smokeList.get(1);
@@ -320,7 +320,7 @@ public class EjectingSmokeValveControl {
 
 				float valueChange = vo.getValueChange().floatValue();
 				float newValue = smokeVO1.getSmokeValve() + valueChange;
-				
+
 				int maxValve = getMaxSmokeValve(smokeVO1.getZone(), smokeVO1.getType());
 				int minValve = getMinSmokeValve(smokeVO1.getZone(), smokeVO1.getType());
 				if (newValue >= maxValve) {
@@ -328,7 +328,7 @@ public class EjectingSmokeValveControl {
 				}
 				if (newValue < minValve) {
 					newValue = minValve;
-				}	
+				}
 				valueChange = newValue - smokeVO1.getSmokeValve();
 				ValveVO vs = new ValveVO(zone, type, "S");
 				vs.setTimeID(fvo.getTimeID());
@@ -424,14 +424,16 @@ public class EjectingSmokeValveControl {
 		if (isZone3OK == false) {
 			int[] zones = { 3, 2 };
 			ArrayList<SmokeValveVO> list = getSmokeListByZones(zones, smokeValveList);
-			result1 = doChamberPressureStradegy(zone3ChamberPressure, list, CHAMBER3_PRESSURE_MAX, CHAMBER3_PRESSURE_MIN);
+			result1 = doChamberPressureStradegy(zone3ChamberPressure, list, CHAMBER3_PRESSURE_MAX,
+					CHAMBER3_PRESSURE_MIN);
 		}
 		// 2. 加一段炉膛压力检测
 		int result2 = 0;
 		if (isZone1OK == false) {
 			int[] zones = { 1, 2 };
 			ArrayList<SmokeValveVO> list = getSmokeListByZones(zones, smokeValveList);
-			result2 = doChamberPressureStradegy(zone1ChamberPressure, list, CHAMBER1_PRESSURE_MAX, CHAMBER1_PRESSURE_MIN);
+			result2 = doChamberPressureStradegy(zone1ChamberPressure, list, CHAMBER1_PRESSURE_MAX,
+					CHAMBER1_PRESSURE_MIN);
 		}
 		// 3. 补偿策略
 		// 3.1 均热段炉膛压力策略结果没有任何改动，并且加一段炉膛压力正常下，在均热段执行策略
@@ -439,14 +441,16 @@ public class EjectingSmokeValveControl {
 		if (result1 == 0 && isZone1OK) {
 			int[] zones = { 1 };
 			ArrayList<SmokeValveVO> list = getSmokeListByZones(zones, smokeValveList);
-			result3 = doChamberPressureStradegy(zone3ChamberPressure, list, CHAMBER3_PRESSURE_MAX, CHAMBER3_PRESSURE_MIN);
+			result3 = doChamberPressureStradegy(zone3ChamberPressure, list, CHAMBER3_PRESSURE_MAX,
+					CHAMBER3_PRESSURE_MIN);
 		}
 		// 3.2 加一段炉膛压力策略结果没有任何改动，并且均热段炉膛压力正常下，在均热段执行策略
 		int result4 = 0;
 		if (result2 == 0 && isZone3OK) {
 			int[] zones = { 3 };
 			ArrayList<SmokeValveVO> list = getSmokeListByZones(zones, smokeValveList);
-			result4 = doChamberPressureStradegy(zone1ChamberPressure, list, CHAMBER1_PRESSURE_MAX, CHAMBER1_PRESSURE_MIN);
+			result4 = doChamberPressureStradegy(zone1ChamberPressure, list, CHAMBER1_PRESSURE_MAX,
+					CHAMBER1_PRESSURE_MIN);
 		}
 
 		if (result1 == 0 && result2 == 0 && result3 == 0 && result4 == 0) {
@@ -519,6 +523,12 @@ public class EjectingSmokeValveControl {
 			// 这是排烟温度过高策略放在炉膛压力策略里执行的逻辑。
 			if (temp > SMOKE_TEMP_MAX && so.isFireNearBy() == false && so.getExchangeSeconds() >= 6) {
 				msg.append(so.getSmokeValveName()).append("排烟温度超标，不参加炉膛压力策略调整阀位。\n");
+				continue;
+			}
+
+			// 暂时跳过均热段右侧煤气排烟温度
+			if (so.getZone() == 3 && so.getType().equals("G") && so.getPosition().equals("R")) {
+				msg.append("跳过均热段右侧煤气排烟温度。\n");
 				continue;
 			}
 
@@ -674,7 +684,7 @@ public class EjectingSmokeValveControl {
 		}
 		return valve;
 	}
-	
+
 	/**
 	 * @param zone
 	 * @param type

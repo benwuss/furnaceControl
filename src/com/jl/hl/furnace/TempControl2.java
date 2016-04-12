@@ -151,6 +151,17 @@ public class TempControl2 {
 		if (newAirValve > getAirValveMax(zoneID))
 			newAirValve = getAirValveMax(zoneID);
 
+		int gasFlow = zoneVO.getFlowZoneGASTarget().intValue();
+
+		// 均热段煤气流量给定值Q≤2500m³/h时，均热段空气流量阀门开度锁定为15%
+		if (mode == 2 && zoneID == 3 && gasFlow <= 2500) {
+			newAirValve = 15;
+		}
+
+		if (mode == 2 && zoneID == 3 && gasFlow <= 3500 && gasFlow > 2500) {
+			newAirValve = 25;
+		}
+
 		if (newGasValve < 0)
 			newGasValve = 0;
 		if (newGasValve > 100)
@@ -447,6 +458,8 @@ public class TempControl2 {
 		for (int i = 0; i < 3; i++) {
 			BigDecimal targetT = tempTargets[i];
 			BigDecimal nowT = zoneVOs[i].getTemp();
+			int zoneID = zoneVOs[i].getZoneID();
+			int gasFlow = zoneVOs[i].getFlowZoneGASTarget().intValue();
 			int tempDiff = targetT.subtract(nowT).intValue(); // 温度差异
 			int exchangeSeconds = zoneVOs[i].getExchangeSeconds();
 
@@ -454,7 +467,14 @@ public class TempControl2 {
 				msg.append("换向时间大于57秒，不根据空燃比调整煤气阀。\n");
 				continue;
 			}
-
+			
+			//流量模式，均热段煤气流量给定值Q≤2500m³/h时，均热段煤气流量给定值2500m³/h＜Q≤3500m³/h时
+			//因为锁定空气阀位，所以不执行空燃比
+			if(mode == 2 && zoneID==3 && (gasFlow <= 2500 || (gasFlow <= 3500 && gasFlow > 2500))){
+				msg.append("流量模式，均热段煤气流量给定值Q≤2500m³/h或2500m³/h＜Q≤3500m³/h时，不执行空燃比。\n");
+				continue;
+			}
+			
 			BigDecimal actual = zoneVOs[i].getAirGasRatioACTUAL();
 			BigDecimal given = zoneVOs[i].getAirGasRatioGIVEN();
 
