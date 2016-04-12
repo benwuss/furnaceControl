@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jl.hl.furnace.model">
+
+	<select id="selectResultByStartTime" parameterType="string"
+		resultType="com.jl.hl.furnace.model.ResultVO">
+		select * from result where startTime = #{startTime}
+	</select>
+
+	<insert id="addResult" parameterType="com.jl.hl.furnace.model.ResultVO">
+		insert into
+		result(startTime, endTime, criteria, counts, total, ratio)
+		values(#{startTime},#{endTime},#{criteria},#{counts},#{total},#{ratio})
+	</insert>
+
+
+</mapper>

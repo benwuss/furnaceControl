@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jl.hl.furnace.model">
+
+	<select id="selectMainByTimeID" parameterType="string"
+		resultType="com.jl.hl.furnace.model.FurnaceVO">
+		select * from furnacemain where timeID = #{timeID} 
+	</select>
+	
+	<select id="selectMainList" parameterType="HashMap"
+		resultType="com.jl.hl.furnace.model.FurnaceVO">
+		select * from furnacemain where timeID between #{startTime} and #{endTime}
+	</select>
+
+     <insert id="addFurnace" parameterType="com.jl.hl.furnace.model.FurnaceVO" > 
+        insert into furnacemain(timeID,gasPressure,gasValveGiven, gasValveActual, airPressure,airValveGiven, airValveActual, oxygen, billetTemp)  
+             values(#{timeID},#{gasPressure},#{gasValveGiven},#{gasValveActual},#{airPressure},#{airValveGiven},#{airValveActual}, #{oxygen}, #{billetTemp})  
+    </insert>
+
+</mapper>

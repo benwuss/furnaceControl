@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jl.hl.furnace.model">
+
+	<select id="selectZoneByTimeID" parameterType="HashMap"
+		resultType="com.jl.hl.furnace.model.FurnaceZoneVO">
+		select * from furnacezone where timeID = #{timeID} and zoneID = #{zoneID}
+	</select>
+	
+	<select id="selectZoneList" parameterType="HashMap"
+		resultType="com.jl.hl.furnace.model.FurnaceZoneVO">
+		select * from furnacezone where timeID between #{startTime} and #{endTime} and zoneID = #{zoneID}
+	</select>
+
+	<insert id="addFurnaceZone" parameterType="com.jl.hl.furnace.model.FurnaceZoneVO">
+		insert into
+		furnacezone(timeID,zoneID,isFireBurningLEFT, isFireBurningRIGHT,
+		airGasRatioACTUAL,airGasRatioGIVEN, temp, tempTarget, flowZoneGAS,
+		flowZoneGASTarget, flowZoneAIR, tempAirEjectSmokeLEFT,
+		tempAirEjectSmokeRIGHT, tempGasEjectSmokeLEFT, tempGasEjectSmokeRIGHT,
+		valveGivenAirEjectSmoke, valveGivenGasEjectSmoke, valveGivenAir,
+		valveGivenGas, valveActualAirEjectSmoke, valveActualGasEjectSmoke,
+		valveActualAir, valveActualGas, exchangeSeconds, chamberPressure)
+		values(#{timeID},#{zoneID},#{isFireBurningLEFT}, #{isFireBurningRIGHT},
+		#{airGasRatioACTUAL},#{airGasRatioGIVEN}, #{temp}, #{tempTarget},
+		#{flowZoneGAS},
+		#{flowZoneGASTarget}, #{flowZoneAIR},
+		#{tempAirEjectSmokeLEFT},
+		#{tempAirEjectSmokeRIGHT},
+		#{tempGasEjectSmokeLEFT}, #{tempGasEjectSmokeRIGHT},
+		#{valveGivenAirEjectSmoke}, #{valveGivenGasEjectSmoke},
+		#{valveGivenAir},
+		#{valveGivenGas}, #{valveActualAirEjectSmoke},
+		#{valveActualGasEjectSmoke},
+		#{valveActualAir}, #{valveActualGas},
+		#{exchangeSeconds}, #{chamberPressure})
+	</insert>
+
+
+</mapper>

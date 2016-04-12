@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jl.hl.furnace.model">
+    
+    <select id="selectValveByTimeID" parameterType="string" resultType="com.jl.hl.furnace.model.ValveVO">
+        select * from valve where timeID = #{timeID}
+    </select>
+    
+    <select id="selectValveByStradegyID" parameterType="hashmap" resultType="com.jl.hl.furnace.model.ValveVO">
+        select * from valve where timeID = #{timeID} and stradegy = #{stradegy}
+    </select>
+    
+    <select id="selectValveByZoneID" parameterType="hashmap" resultType="com.jl.hl.furnace.model.ValveVO">
+        select * from valve where timeID = #{timeID} and zone = #{zone}
+    </select>
+    
+     <insert id="addValve" parameterType="com.jl.hl.furnace.model.ValveVO" > 
+        insert into valve(timeID,stradegy,zone, type, function, newValue, oldValue, valueChange)  
+             values(#{timeID},#{stradegy},#{zone},#{type},#{function},#{newValue},#{oldValue}, #{valueChange})  
+    </insert>
+    
+    
+</mapper>
